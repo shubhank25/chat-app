@@ -35,7 +35,7 @@ const JWT_SECRET = 'your-secret-key';
 
 // Auth routes
 app.post('/api/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, profilePic } = req.body;
   
   if (users.find(u => u.username === username)) {
     return res.status(400).json({ error: 'Username already exists' });
@@ -46,7 +46,7 @@ app.post('/api/register', async (req, res) => {
     id: uuidv4(),
     username,
     password: hashedPassword,
-    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
+    avatar: profilePic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
   };
   
   users.push(user);

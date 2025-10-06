@@ -15,6 +15,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [profilePic, setProfilePic] = useState<string>('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +31,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         : `${window.location.protocol}//${window.location.hostname}:5000`;
       const response = await axios.post(`${serverUrl}${endpoint}`, {
         username,
-        password
+        password,
+        profilePic: profilePic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
       });
 
       onLogin(response.data.user, response.data.token);
@@ -84,6 +86,27 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             placeholder="Enter your password"
           />
         </div>
+
+        {!isLogin && (
+          <div className="form-group">
+            <label className="form-label">Profile Picture URL (Optional)</label>
+            <input
+              type="url"
+              className="form-input"
+              value={profilePic}
+              onChange={(e) => setProfilePic(e.target.value)}
+              placeholder="Enter image URL or leave blank for auto-generated"
+            />
+            {profilePic && (
+              <img 
+                src={profilePic} 
+                alt="Preview" 
+                style={{ width: '50px', height: '50px', borderRadius: '50%', marginTop: '10px' }}
+                onError={() => setProfilePic('')}
+              />
+            )}
+          </div>
+        )}
 
         <button type="submit" className="login-button" disabled={loading}>
           {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Register')}
